@@ -1,0 +1,9 @@
+body {
+    color: #566787;
+	background-image: url(../img/rec_senha.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	font-family: 'Varela Round', 
+	sans-serif;
+	font-size: 13px;
+}

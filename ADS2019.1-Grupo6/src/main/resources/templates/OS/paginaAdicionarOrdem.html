@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lista de Ordens de Serviços</title>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style2.css}" />
+<link rel="icon" th:href="@{/img/favicon.png}">
+<link rel="stylesheet" type="text/css" th:href="@{/DataTables/datatables.min.css/}" />
+
+</head>
+<body>
+    <div class="container">
+        <div class="table-wrapper">
+        		<nav class="navbar navbar-default">
+					<div class="container-fluid">
+						<ul class="nav navbar-nav">
+					        <li><a th:href="@{/usuario/adicionarUsuario}">Usuários</a></li>
+					      	<li class="active"><a th:href="@{/OS/adicionarOrdem}">Ordens de Serviços</a></li>
+					      	<li><a th:href="@{/projeto/adicionarProjeto}">Projetos</a></li>
+					      	<!-- <li><a th:href="recursos.html">Recursos</a></li> -->
+					    </ul>
+					</div>
+				</nav>
+            <div class="table-title">
+                <div class="row align-items-center">
+                	<div class="col-sm-3">
+                		<img th:src="@{/img/logo.png}">
+                    </div>
+                    <div class="col-sm-4">
+						<h2>Ordens de Serviços</b></h2>
+					</div>
+					<div class="col-sm-9">
+						<button href="#logout" type="button" class="btn btn-danger" data-toggle="modal">Sair</button>
+						<a href="#addOrdemDeServicoModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i><span>Adicionar Ordem de Serviço</span></a>
+					</div>
+                </div>
+            </div>
+           <table id="table" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Registro Fotográfico</th>
+                        <th>Local</th>
+                        <th>Data Abertura</th>
+                        <th>Data Fechamento</th>
+                        <th>Contratista</th>
+                        <th>status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="os:${ordemDeServicos}">
+						<td th:text="${os.id}"></td>
+						<td th:text="${os.descricao}"></td>
+						<td text="Foto"> <a href="#registrofotograficomodal" type="button"	 class="btn btn-default" data-toggle="modal" > <span class="glyphicon glyphicon-envelope">Registros</span> </a></td>
+						<td th:text="${os.local}"></td>
+						<td th:text="${os.dataDeAbertura}"></td>
+						<td th:text="${os.dataDeFechamento}"></td>
+						<td th:text="${os.contratista}"></td>
+						<td th:text="${os.status}"></td>
+						
+						<td>
+                            <a href="#editaOrdemDeServicoModal" class="edit"  data-toggle="modal" 
+                            th:data-id="${os.id}" th:data-descricao="${os.descricao}" th:data-local="${os.local}"
+                			th:data-dtAbertura="${os.dataDeAbertura}" th:data-dtFechamento="${os.dataDeFechamento}"
+               				th:data-contratista="${os.contratista}" th:data-status="${os.status}">
+               				<i class="material-icons" data-toggle="tooltip" title="Editar">&#xE254;</i></a>
+                            <a href="#deletaOrdemDeServicoModal" class="delete" data-toggle="modal"><i class="material-icons" th:href="@{/ordemDeServico/excluirOrdemDeServico/{id}(id=${os.id})}" data-toggle="tooltip" title="Deletar">&#xE872;</i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+	<div id="addOrdemDeServicoModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form th:object="${ordemdeservico}" th:action="@{/OS/salvarOrdem}">
+					<div class="modal-header">
+						<h4 class="modal-title">Adicionar Ordem de Serviço</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">					
+				
+						
+						<div class="form-group">						
+							<label>Data Abertura</label>
+							<input type="data-toggle" class="form-control" th:field="*{descricao}" autofocus="autofocus" placeholder="xx/xx/xxxx" required>
+						</div>
+						<div class="form-group">
+							<label>Data Fechamento</label>
+							<input type="text" class="form-control" th:field="*{local}" autofocus="autofocus" placeholder="xx/xx/xxxx" required>
+						</div>
+						<div class="form-group">
+							<label>Descrição</label>
+							<input type="text" class="form-control" th:field="*{dataDeAbertura}" autofocus="autofocus" placeholder="Serviço Realizado" required>
+						</div>
+						<div class="form-group">
+							<label>Local</label>
+							<input type="text" class="form-control" th:field="*{dataDeFechamento}" autofocus="autofocus" placeholder="Localização do serviço" required>
+						</div>
+						<div class="form-group">
+							<label>Contratista</label>
+							<input type="text" class="form-control" th:field="*{contratista}" autofocus="autofocus" placeholder="Nome da Empresa" required>
+						</div>
+						<div class="form-group">
+							<label>Status</label> <select class="form-control" th:field="*{status}" autofocus="autofocus" id="select" required>
+						    	<option value="1">Em andamento</option>
+						    	<option value="2">Finalizado</option>
+						    </select>	
+						</div>					
+					</div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" th:href="@{/OS/listarOrdemDeServico}" data-dismiss="modal" value="Cancelar">
+						<input type="submit" class="btn btn-success" value="Adicionar">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="editaOrdemDeServicoModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form  th:object="${ordemdeservico}" th:action="@{/OS/alterarOrdem}" >
+					<div class="modal-header">
+						<h4 class="modal-title">Editar Ordem de Serviço</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">					
+					<div class="form-group">
+							<label>ID</label>
+							<input type="text" class="form-control" th:field="*{id}" autofocus="autofocus" th:id="idEditar" th:name="idEditar" placeholder="ID"  Readonly="readonly">
+						</div>
+						<div class="form-group">
+							<label>Data Abertura</label>
+							<input type="data-toggle" class="form-control" th:field="*{descricao}" th:id="dtinicioEditar" th:name="dtinicioEditar" autofocus="autofocus" placeholder="xx/xx/xxxx" required>
+						</div>
+						<div class="form-group">
+							<label>Data Fechamento</label>
+							<input type="text" class="form-control" th:field="*{local}" th:id="dtfimEditar" th:name="dtfimEditar" autofocus="autofocus" placeholder="xx/xx/xxxx" required>
+						</div>
+						<div class="form-group">
+							<label>Descrição</label>
+							<input type="text" class="form-control" th:field="*{dataDeAbertura}"  th:id="descricaoEditar" th:name="descricaoEditar" autofocus="autofocus" placeholder="Serviço Realizado" required>
+						</div>
+						<div class="form-group">
+							<label>Local</label>
+							<input type="text" class="form-control" th:field="*{dataDeFechamento}" th:id="localEditar" th:name="localEditar" autofocus="autofocus" placeholder="Localização do serviço" required>
+						</div>
+						<div class="form-group">
+							<label>Contratista</label>
+							<input type="text" class="form-control" th:field="*{contratista}" th:id="contratista" th:name="contratista" autofocus="autofocus" placeholder="Nome da Empresa" required>
+						</div>
+						<div class="form-group">
+							<label>Status</label> <select class="form-control" th:field="*{status}" autofocus="autofocus" th:id="statuseditar" th:name="statuseditar"  required>
+						    	<option value="1">Em andamento</option>
+						    	<option value="2">Finalizado</option>
+						    </select>				    
+						</div>					
+					</div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+						<input type="submit" class="btn btn-info" value="Salvar">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="deletaOrdemDeServicoModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form th:href="@{/ordemDeServico/excluirOrdem/{id}(id=${ordemdeservico.id})}">
+					<div class="modal-header">
+						<h4 class="modal-title">Deletar Ordem de Serviço</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">					
+						<p>Tem certeza que deseja deletar a ordem de serviço?</p>
+						<p class="text-warning"><small>Essa ação não pode ser desfeita.</small></p>
+					</div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" th:href="@{/ordemDeServico/listarOrdemDeServico}" data-dismiss="modal" value="Cancelar">
+						<input type="submit" class="btn btn-danger" value="Deletar">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div id="registrofotograficomodal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form>
+					<div class="modal-header">
+						<h4 class="modal-title"> Imagem Registrada</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-footer">
+						<img th:src="@{/img/cartaMapa.png}">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<div id="logout" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form>
+					<div class="modal-header">
+						<h4 class="modal-title">Sair</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">					
+						<p>Tem certeza que deseja sair?</p>
+					</div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" th:href="@{/ordemDeServico/listarOrdemDeServico}" data-dismiss="modal" value="Cancelar">
+						<input type="submit" class="btn btn-danger" value="Sim">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" th:src="@{/DataTables/datatables.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/javascript.js}"></script>	
+	<script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('.delete').on('click', function () { //evento de clique na lixeira de deletar
+                var id = $(this).attr('data-id');//id recebido sendo setado para a variavel userid
+                console.log(id);
+                $('#idExcluir').val(id);//objeto userid que esta em um imput hidden na modal deletar, está recebendo o valor da variavel userids			
+
+            });
+
+            $('.edit').on('click', function () {
+
+                var id = $(this).attr('data-id');
+                var descricao = $(this).attr('data-descricao');
+                var local = $(this).attr('data-local');
+                var abertura = $(this).attr('data-dtAbertura');
+                var fechamento = $(this).attr('data-dtFechamento');
+                var contratista = $(this).attr('data-contratista');
+                var status = $(this).attr('data-status');
+                
+
+                $('#idEditar').val(id);
+                $('#dtinicioEditar').val(abertura);
+                $('#dtfimEditar').val(fechamento);
+                $('#descricaoEditar').val(descricao);
+                $('#localEditar').val(local);
+                $('#contratista').val(contratista);
+                
+                $("#statuseditar option[value=" + status + "]").attr('selected', 'selected');
+                
+            });
+
+        });
+	</script> 
+	
+</body>
+</html>

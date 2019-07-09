@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmls:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista de OS</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/style2.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- <script src="https://github.com/igorescobar/jQuery-Mask-Plugin/blob/master/dist/jquery.mask.min.js"></script>-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style2.css}" />
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            var checkbox = $('table tbody input[type="checkbox"]');
+            $("#selectAll").click(function () {
+                if (this.checked) {
+                    checkbox.each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    checkbox.each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+            checkbox.click(function () {
+                if (!this.checked) {
+                    $("#selectAll").prop("checked", false);
+                }
+            });
+
+            $('.delete').on('click', function () { //evento de clique na lixeira de deletar
+                var osid = $(this).attr('data-osid');//id recebido sendo setado para a variavel userid
+                $('#osidexclusao').val(osid);//objeto userid que esta em um imput hidden na modal deletar, está recebendo o valor da variavel userids			
+
+            });
+
+
+
+
+            $('.edit').on('click', function () {
+
+                var osid = $(this).attr('data-osid');
+                var osdescricao = $(this).attr('data-osdescricao');
+                var oslocal = $(this).attr('data-oslocal');
+                var osdataDeAbertura = $(this).attr('data-osdataDeAbertura');
+                var osdataDeFechamento = $(this).attr('data-osdataDeFechamento');
+                var oscontratista = $(this).attr('data-oscontratista');
+                var osstatus = $(this).attr('data-osstatus');
+                var osusuario = $(this).attr('data-osusuario');
+
+
+                $('#osid').val(osid);
+                $('#osdescricao').val(osdescricao);
+                $('#oslocal').val(oslocal);
+                $('#osdatainicio').val(osdataDeAbertura);
+                $('#osdatafim').val(osdataDeFechamento);
+                $('#oscontratista').val(oscontratista);
+
+                $("#osstatus option[value=" + osstatus + "]").attr('selected', 'selected');
+                $("#osusuario option[value=" + osusuario + "]").attr('selected', 'selected');
+            });
+
+            $('.datainicio').mask('00/00/0000');
+            $('.datafim').mask('00/00/0000');
+
+            $('#abrirmodaladicionar').on('click', function () {
+
+                var usuarioid = $(this).attr('data-userid');
+                console.log(userid);
+
+
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row align-items-center">
+                    <div class="col-sm-3">
+                        <img th:src="@{/img/img2_login.png}">
+                    </div>
+                    <div class="col-sm-4">
+                        <h2>Ordem de Serviço</b></h2>
+                    </div>
+                    <div class="col-sm-9">
+                        <a href="#addOS" id="abrirmodaladicionar" class="btn btn-success" data-userid="${oslista}"
+                            data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Adicionar OS</span></a>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <span class="custom-checkbox">
+                                <input type="checkbox" id="selectAll">
+                                <label for="selectAll"></label>
+                            </span>
+                        </th>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Local</th>
+                        <th>Data Inicio</th>
+                        <th>Data Fim</th>
+                        <th>Contratista</th>
+                        <th>Status</th>
+                        <th>Usuário</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="oslista : ${ordemdeservicolista}">
+                        <td>
+                            <span class="custom-checkbox">
+                                <input type="checkbox" id="checkbox1" name="options[]" value="1">
+                                <label for="checkbox1"></label>
+                            </span>
+                        <td th:text="${oslista.id}">ID</td>
+                        <td th:text="${oslista.descricao}">Descrição</td>
+                        <td th:text="${oslista.local}">Local</td>
+                        <td th:text="${oslista.dataDeAbertura}">Data Inicio</td>
+                        <td th:text="${oslista.dataDeFechamento}">Data Fim</td>
+                        <td th:text="${oslista.contratista}">Contratista</td>
+                        <td th:text="${oslista.status}">Status</td>
+                        <td th:text="${oslista.usuario.nome}">Usuário</td>
+
+                        <td>
+
+
+                            <a href="#editaOrdemModal" class="edit" th:data-osid="${oslista.id}" th:data-osdescricao="${oslista.descricao}"
+                                th:data-oslocal="${oslista.local}" th:data-osdataDeAbertura="${oslista.dataDeAbertura}"
+                                th:data-osdataDeFechamento="${oslista.dataDeFechamento}" th:data-oscontratista="${oslista.contratista}"
+                                th:data-osstatus="${oslista.status}" th:data-osusuario="${oslista.usuario.id}"
+                                data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Editar">&#xE254;</i></a>
+                            <a href="#deletaOrdemModal" th:data-osid="${oslista.id}" class="delete" data-toggle="modal"><i
+                                    class="material-icons" data-toggle="tooltip" title="Deletar">&#xE872;</i></a>
+
+
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="clearfix">
+                <ul class="pagination">
+                    <li class="page-item"><a href="#">Anterior</a></li>
+                    <li class="page-item"><a href="#" class="page-link">1</a></li>
+                    <li class="page-item"><a href="#" class="page-link">2</a></li>
+                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
+                    <li class="page-item"><a href="#" class="page-link">4</a></li>
+                    <li class="page-item"><a href="#" class="page-link">5</a></li>
+                    <li class="page-item"><a href="#" class="page-link">Próximo</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="addOS" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:object="${ordemdeservico}" th:action="@{/OS/salvarOrdem}" method="POST">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Adicionar Ordem de Serviço</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>descricao</label>
+                            <input th:field="*{descricao}" type="text" class="form-control" autofocus="autofocus"
+                                placeholder="Descrição" required>
+                        </div>
+                        <div class="form-group">
+                            <label>local</label>
+                            <input th:field="*{local}" type="text" class="form-control" autofocus="autofocus"
+                                placeholder="Local" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Inicio</label>
+                            <input id="datainicio" th:field="*{dataDeAbertura}" type="text" class="form-control datainicio"
+                                autofocus="autofocus" placeholder="00/00/0000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Fim</label>
+                            <input id="datafim" th:field="*{dataDeFechamento}" type="text" class="form-control datafim"
+                                autofocus="autofocus" placeholder="00/00/0000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contratista</label>
+                            <input type="text" th:field="*{contratista}" class="form-control" autofocus="autofocus"
+                                placeholder="Contratista" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label> <select class="form-control" th:field="*{status}" autofocus="autofocus"
+                                autocomplete="false" id="exampleFormControlSelect1" required>
+                                <option value="Aberto">Aberto</option>
+                                <option value="Em-andamento">Em andamento</option>
+                                <option value="Em-Revisao">Em Revisao</option>
+                                <option value="Fechado">Fechado</option>
+                                <option value="Bug">Bug</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Usuário</label><select class="form-control" th:field="*{Usuario}" autofocus="autofocus"
+                                autocomplete="false" id="exampleFormControlSelect1" required>
+                                <option value="8">Rodrigo</option>
+                                <option value="9">Myrian</option>
+                                <option value="10">Phillipe</option>
+                                <option value="11">Juan</option>
+                                <option value="12">Emmanuel</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-success" value="Adicionar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="editaOrdemModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formularioeditarordem" th:action="@{/OS/updateOrdem}" method="POST">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Editar Ordem de Serviço</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <input type="hidden" class="form-control" id="osid" name="osid" value="" autofocus="autofocus"
+                                placeholder="ID" required />
+
+                        </div>
+                        <div class="form-group">
+                            <label>descricao</label>
+                            <input type="text" class="form-control" id="osdescricao" name="osdescricao" value=""
+                                autofocus="autofocus" placeholder="Nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>local</label>
+                            <input type="text" class="form-control" id="oslocal" name="oslocal" value="" autofocus="autofocus"
+                                placeholder="Sobrenome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Inicio</label>
+                            <input type="text" class="form-control datainicio" id="osdatainicio" name="osdatainicio"
+                                value="" autofocus="autofocus" placeholder="00/00/0000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Fim</label>
+                            <input type="text" class="form-control datafim" id="osdatafim" name="osdatafim" value=""
+                                autofocus="autofocus" placeholder="00/00/0000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contratista</label>
+                            <input type="text" class="form-control" id="oscontratista" name="oscontratista" value=""
+                                autofocus="autofocus" placeholder="Contratista" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label> <select class="form-control" autofocus="autofocus"
+                                id="osstatus" name="osstatus" value=""
+                                required>
+                                <option value="Aberto">Aberto</option>
+                                <option value="Em-andamento">Em andamento</option>
+                                <option value="Em-Revisao">Em Revisao</option>
+                                <option value="Fechado">Fechado</option>
+                                <option value="Bug">Bug</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Usuário</label>
+                            <select name="osusuario" class="form-control" autofocus="autofocus" id="osusuario"  value=""
+                                required>
+                                <option value="8">Rodrigo</option>
+                                <option value="9">Myrian</option>
+                                <option value="10">Phillipe</option>
+                                <option value="11">Juan</option>
+                                <option value="12">Emmanuel</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-warning" value="Salvar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="deletaOrdemModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formularioapagar" th:action="@{/OS/excluirOrdem}" method="post">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Deletar Ordem de Serviço</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Você tem certeza que deseja deletar a Ordem de Serviço?</p>
+                        <p class="text-warning"><small>Essa ação não pode ser desfeita.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="osidexclusao" name="osidexclusao" value="" />
+                        <!-- aqui ele recebe do JQuery o id do usuario -->
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                        <input type="submit" class="btn btn-danger" value="Deletar">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
